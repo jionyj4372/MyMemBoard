@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member">
+	
+	<!-- 회원 가입 -->
+	<insert id="mJoin" parameterType="member">
+		INSERT INTO MEMBER VALUES(#{memId}, #{memPw}, #{memName}
+		, #{memBirth}, #{memGender}, #{memEmail}
+		, #{memPhone}, #{memAddr}, #{memProfileName, jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 로그인 -->
+	<select id="mLogin" parameterType="member" resultType="member">
+		<!--  
+		SELECT MEMID FROM MEMBER WHERE MEMID = #{memId} AND MEMPW = #{memPw}
+		-->
+		SELECT * FROM MEMBER WHERE MEMID = #{memId}
+	</select>
+	
+	<!-- 회원 목록보기(관리자계정) -->
+	<select id="mmList" resultType="member">
+		SELECT * FROM MEMBER
+	</select>
+	
+	<!-- 회원 상세보기(관리자계정,일반 계정(자신만)) -->
+	<select id="mView" parameterType="String" resultType="member">
+		SELECT * FROM MEMBER WHERE MEMID = #{memId}
+	</select>
+	
+	<!-- 회원 아이디 중복체크 -->
+	<select id="idCheck" parameterType="String" resultType="String">
+		SELECT MEMID FROM MEMBER WHERE MEMID = #{memId}
+	</select>
+	
+	<!-- 전체 게시글 갯수 확인 -->
+	<select id="mCount" resultType="int">
+		SELECT COUNT(*) FROM MEMBER
+	</select>
+	
+	<!-- 페이징 처리 -->
+	<select id="mList" parameterType="paging" resultType="member">
+		SELECT * FROM MEMBERLIST 
+		WHERE RN BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	
+	
+	<!-- 회원 검색 방법(이게 젤 편함) -->
+	<select id="mSearch" parameterType="search" resultType="member">
+		SELECT * FROM MEMBER WHERE ${category} LIKE '%' || #{keyword} || '%'
+		<!-- #{}은 값을 반환할때 '반환값' 으로 반환하지만,
+			${}는 값을 반환할때 반환값 그대로 반환함('') -> 작은 따옴표 없이 반환
+		 -->
+	</select>
+	
+	<!-- 회원 검색 방법 2 -->
+	<select id="mSearch2" parameterType="search" resultType="member">
+		SELECT * FROM MEMBER WHERE 
+		
+		<!-- #{category} 대신 choose, when 태그 사용(c태그아님) -->
+		<choose>
+			<when test="category eq 'MEMNAME'">MEMNAME</when>
+			
+			<when test="category eq 'MEMID'">MEMID</when>
+			
+			<otherwise>MEMPHONE</otherwise>
+		</choose> 
+		
+		LIKE '%' || #{keyword} || '%'
+	</select>
+	
+	
+	<!-- 회원 검색 방법 3 -->
+	<select id="mSearchName" parameterType="search" resultType="member">
+		SELECT * FROM MEMBERLIST WHERE MEMNAME LIKE '%' || #{keyword} || '%'
+		<!-- '%' || #{keyword} || '%' : %입력한값% 라는 뜻 -->
+		<!-- ex) %인천% -> 인천이라는 단어가 들어간 모든 단어 (바다인천나라, 인천일보,일보인천) -->
+		<!-- WHERE #{category} 로 쿼리를 작성하면 'MEMNAME' = '%인천%' 이므로 
+		-->
+	</select>
+	<select id="mSearchId" parameterType="search" resultType="member">
+		SELECT * FROM MEMBERLIST WHERE MEMID LIKE '%' || #{keyword} || '%'
+		
+	</select>
+	<select id="mSearchPhone" parameterType="search" resultType="member">
+		SELECT * FROM MEMBERLIST WHERE MEMPHONE LIKE '%' || #{keyword} || '%'
+		
+	</select>
+	
+	
+	
+	<!-- 회원정보 수정 -->
+	<update id="mModify" parameterType="member">
+		UPDATE MEMBER SET MEMPW = #{memPw}, 
+		MEMEMAIL = #{memEmail}, MEMPHONE = #{memPhone}, 
+		MEMADDR = #{memAddr}, MEMPROFILENAME = #{memProfileName, jdbcType=VARCHAR} 
+		WHERE MEMID = #{memId}
+	</update>
+	
+	<!-- 회원삭제 -->
+	<delete id="mDelete" parameterType="String">
+		DELETE FROM MEMBER WHERE MEMID = #{memId}
+	</delete>
+	
+	
+	
+	
+</mapper>

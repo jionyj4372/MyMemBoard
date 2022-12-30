@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+	<!-- com.회사명.프로젝트명.패키지명.클래스명에서 읽는 모든 데이터는 "별칭명"라고 읽겠다 -->
+		<typeAlias type="com.icia.mbp.dto.MEMBER" alias="member"/>
+		<typeAlias type="com.icia.mbp.dto.BOARD" alias="board"/>
+		<typeAlias type="com.icia.mbp.dto.PAGE" alias="paging"/>
+		<typeAlias type="com.icia.mbp.dto.SEARCH" alias="search"/>
+		<typeAlias type="com.icia.mbp.dto.COMMENT" alias="comment"/>
+	</typeAliases>
+	
+	
+</configuration>
